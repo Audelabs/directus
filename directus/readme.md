@@ -80,3 +80,57 @@ We believe in making powerful data tools accessible to everyone. This license le
 - Maintain active development and strong support
 - Continue improving the platform for everyone
 - Stay sustainable as an independent project
+
+---
+
+## 🔬 Audelabs Fork Modifications
+
+This repository is a fork of the official Directus project with modifications to the Docker build and release process. The following changes have been implemented:
+
+### Docker Image Repository
+
+All Docker images are published to a custom GitHub Container Registry repository:
+
+- **`ghcr.io/audelabs/directus`**
+
+This prevents any conflict with the official `directus/directus` images.
+
+### Tagging Strategy
+
+The Docker image tags are structured to distinguish them from the official releases while maintaining a clear link to the upstream version.
+
+#### Release Tags
+
+Release tags follow the format `<official-version>-audelabs.<build-number>`.
+
+- **`<official-version>`**: The official Directus version (e.g., `10.8.3`).
+- **`<build-number>`**: The GitHub Actions run number for the build.
+
+**Example:** `ghcr.io/audelabs/directus:10.8.3-audelabs.123`
+
+#### Development Tags
+
+- **`latest-audelabs`**: This tag is manually pushed and represents the latest stable build from the `main` branch.
+- **`canary-audelabs`**: This tag is automatically applied to pre-release builds.
+
+### Manual Tagging Process
+
+To manually build and push the `latest-audelabs` tag:
+
+1.  **Login to GHCR:**
+    ```bash
+    docker login ghcr.io -u <YOUR_GITHUB_USERNAME>
+    ```
+    *(Use a Personal Access Token with `write:packages` scope as the password.)*
+
+2.  **Build the image:**
+    ```bash
+    docker build -t ghcr.io/audelabs/directus:latest-audelabs .
+    ```
+
+3.  **Push the image:**
+    ```bash
+    docker push ghcr.io/audelabs/directus:latest-audelabs
+    ```
+
+These changes are implemented in the `.github/workflows/release.yml` workflow.
