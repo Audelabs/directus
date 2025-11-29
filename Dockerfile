@@ -50,25 +50,26 @@ EOF
 FROM node:${NODE_VERSION}-alpine AS runtime
 
 RUN npm install --global \
-	pm2@5 \
-	corepack@latest # Remove again once corepack >= 0.31 made it into base image
+  pm2@5 \
+  corepack@latest # Remove again once corepack >= 0.31 made it into base image
 
 USER node
 
 WORKDIR /directus
 
 ENV \
-	DB_CLIENT="sqlite3" \
-	DB_FILENAME="/directus/database/database.sqlite" \
-	NODE_ENV="production" \
-	NPM_CONFIG_UPDATE_NOTIFIER="false"
+  DB_CLIENT="sqlite3" \
+  DB_FILENAME="/directus/database/database.sqlite" \
+  NODE_ENV="production" \
+  NPM_CONFIG_UPDATE_NOTIFIER="false"
 
 COPY --from=builder --chown=node:node /directus/ecosystem.config.cjs .
 COPY --from=builder --chown=node:node /directus/dist .
 
-EXPOSE 8055
+# Let docker-compose decide which port to expose
+# EXPOSE 8055
 
 CMD : \
-	&& node cli.js bootstrap \
-	&& pm2-runtime start ecosystem.config.cjs \
-	;
+  && node cli.js bootstrap \
+  && pm2-runtime start ecosystem.config.cjs \
+  ;
